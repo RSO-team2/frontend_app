@@ -1,25 +1,55 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react'
+import { Pizza } from 'lucide-react'
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link,
+} from "react-router-dom";
+import Login from './components/Login'
+import Register from './components/Register'
+
+const Home = () => {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex flex-col items-center justify-center">
+      <div className="flex flex-col items-center justify-center gap-8">
+        <div className="flex flex-col items-center gap-4">
+          <Pizza className="h-24 w-24 text-blue-600" />
+          <h1 className="text-4xl font-bold text-blue-600">Fun Food Times</h1>
+        </div>
+
+        <div className="flex gap-4 space-x-4 items-center justify-around">
+          <Link to="/login">
+            <button
+              className="h-14 px-8 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-500 transition-colors text-center"
+            >
+              Login
+            </button>
+          </Link>
+          <Link to="/register">
+            <button
+              className="h-14 px-8 py-3 border-2 border-blue-600 text-blue-600 rounded-lg font-medium hover:bg-blue-50 transition-colors text-center"
+            >
+              Register
+            </button>
+          </Link>
+        </div>
+      </div>
+    </div>
+  )
+};
 
 function App() {
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="login" element={<Login />} />
+        <Route path="register" element={<Register />} />
+      </Routes>
+    </Router>
   );
 }
 
-export default App;
+export default App
