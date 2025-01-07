@@ -29,11 +29,10 @@ function Login() {
 
             if (!response.ok) {
                 throw new Error(data.message || 'Login failed')
+            } else {
+                localStorage.setItem('user', JSON.stringify(data.user_id))
+                navigate('/home')
             }
-
-            localStorage.setItem('user', JSON.stringify(data.user_id))
-            // console.log('Logged in successfully:', data.user_id)
-            navigate('/home')
         } catch (err) {
             setError(err instanceof Error ? err.message : 'An error occurred during login')
         } finally {

@@ -46,11 +46,10 @@ function Register() {
 
             if (!response.ok) {
                 throw new Error(data.error || 'Registration failed')
+            } else {
+                localStorage.setItem('user', JSON.stringify(data.user_id))
+                navigate('/home')
             }
-
-            // console.log('Registered successfully:', data.user_id)
-            localStorage.setItem('user', JSON.stringify(data.user_id))
-            navigate('/home')
         } catch (err) {
             setError(err instanceof Error ? err.message : 'An error occurred during registration')
         } finally {
