@@ -5,7 +5,7 @@ import { Pizza } from 'lucide-react'
 function Login() {
     const navigate = useNavigate();
 
-    const authUrl = process.env.LOGIN_ENDPOINT;
+    const authUrl = process.env.REACT_APP_LOGIN_ENDPOINT;
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [loading, setLoading] = useState(false)

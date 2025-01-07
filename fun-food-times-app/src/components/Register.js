@@ -5,7 +5,7 @@ import { Pizza } from 'lucide-react'
 function Register() {
     const navigate = useNavigate();
 
-    const authUrl = process.env.LOGIN_ENDPOINT;
+    const authUrl = process.env.REACT_APP_LOGIN_ENDPOINT;
     const [formData, setFormData] = useState({
         user_name: '',
         user_email: '',
