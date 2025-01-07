@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Pizza } from 'lucide-react'
 
-function Login({ onSwitchToRegister }) {
+function Login() {
+    const navigate = useNavigate();
+
     const authUrl = process.env.REACT_APP_LOGIN_ENDPOINT;
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -15,12 +17,12 @@ function Login({ onSwitchToRegister }) {
         setError(null)
 
         try {
-            const response = await fetch('YOUR_API_ENDPOINT/auth/login', {
+            const response = await fetch(authUrl + '/api/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ email, password }),
+                body: JSON.stringify({ "user_email": email, "user_password": password }),
             })
 
             const data = await response.json()
@@ -29,9 +31,9 @@ function Login({ onSwitchToRegister }) {
                 throw new Error(data.message || 'Login failed')
             }
 
-            localStorage.setItem('user', JSON.stringify(data.user))
-            console.log('Logged in successfully:', data.user)
-
+            localStorage.setItem('user', JSON.stringify(data.user_id))
+            // console.log('Logged in successfully:', data.user_id)
+            navigate('/home')
         } catch (err) {
             setError(err instanceof Error ? err.message : 'An error occurred during login')
         } finally {
@@ -117,7 +119,6 @@ function Login({ onSwitchToRegister }) {
                         Don't have an account?{' '}
                         <Link to="/register">
                             <button
-                                onClick={onSwitchToRegister}
                                 className="text-blue-600 font-medium hover:text-blue-500"
                             >
                                 Sign up

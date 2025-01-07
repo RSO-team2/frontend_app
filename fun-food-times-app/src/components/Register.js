@@ -1,18 +1,21 @@
 import React, { useState } from 'react'
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Pizza } from 'lucide-react'
 
-function Register({ onSwitchToLogin }) {
+function Register() {
+    const navigate = useNavigate();
+
     const authUrl = process.env.REACT_APP_LOGIN_ENDPOINT;
     const [formData, setFormData] = useState({
-        username: '',
-        email: '',
-        password: '',
-        address: '',
-        type: 'customer',
+        user_name: '',
+        user_email: '',
+        user_password: '',
+        user_address: '',
+        user_type: 'customer',
     })
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null)
+    const [userPasswordConfirm, setUserPasswordConfirm] = useState('')
 
     const handleChange = (e) => {
         const { name, value } = e.target
@@ -24,8 +27,14 @@ function Register({ onSwitchToLogin }) {
         setLoading(true)
         setError(null)
 
+        if (formData.user_password !== userPasswordConfirm) {
+            setError('Passwords do not match')
+            setLoading(false)
+            return
+        }
+
         try {
-            const response = await fetch('YOUR_API_ENDPOINT/auth/register', {
+            const response = await fetch(authUrl + '/api/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -36,12 +45,12 @@ function Register({ onSwitchToLogin }) {
             const data = await response.json()
 
             if (!response.ok) {
-                throw new Error(data.message || 'Registration failed')
+                throw new Error(data.error || 'Registration failed')
             }
 
-            console.log('Registered successfully:', data.user)
-            onSwitchToLogin()
-
+            // console.log('Registered successfully:', data.user_id)
+            localStorage.setItem('user', JSON.stringify(data.user_id))
+            navigate('/home')
         } catch (err) {
             setError(err instanceof Error ? err.message : 'An error occurred during registration')
         } finally {
@@ -75,14 +84,14 @@ function Register({ onSwitchToLogin }) {
 
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div className="space-y-2">
-                            <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+                            <label htmlFor="user_name" className="block text-sm font-medium text-gray-700">
                                 Username
                             </label>
                             <input
-                                id="username"
-                                name="username"
+                                id="user_name"
+                                name="user_name"
                                 type="text"
-                                value={formData.username}
+                                value={formData.user_name}
                                 onChange={handleChange}
                                 className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-200 focus:border-blue-400 transition-colors"
                                 placeholder="Enter your username"
@@ -91,14 +100,14 @@ function Register({ onSwitchToLogin }) {
                         </div>
 
                         <div className="space-y-2">
-                            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                            <label htmlFor="user_email" className="block text-sm font-medium text-gray-700">
                                 Email
                             </label>
                             <input
-                                id="email"
-                                name="email"
+                                id="user_email"
+                                name="user_email"
                                 type="email"
-                                value={formData.email}
+                                value={formData.user_email}
                                 onChange={handleChange}
                                 className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-200 focus:border-blue-400 transition-colors"
                                 placeholder="Enter your email"
@@ -107,14 +116,14 @@ function Register({ onSwitchToLogin }) {
                         </div>
 
                         <div className="space-y-2">
-                            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                            <label htmlFor="user_password" className="block text-sm font-medium text-gray-700">
                                 Password
                             </label>
                             <input
-                                id="password"
-                                name="password"
+                                id="user_password"
+                                name="user_password"
                                 type="password"
-                                value={formData.password}
+                                value={formData.user_password}
                                 onChange={handleChange}
                                 className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-200 focus:border-blue-400 transition-colors"
                                 placeholder="Enter your password"
@@ -123,14 +132,30 @@ function Register({ onSwitchToLogin }) {
                         </div>
 
                         <div className="space-y-2">
-                            <label htmlFor="address" className="block text-sm font-medium text-gray-700">
+                            <label htmlFor="user_password_confirm" className="block text-sm font-medium text-gray-700">
+                                Confirm Password
+                            </label>
+                            <input
+                                id="user_password_confirm"
+                                name="user_password_confirm"
+                                type="password"
+                                value={userPasswordConfirm}
+                                onChange={(e) => setUserPasswordConfirm(e.target.value)}
+                                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-200 focus:border-blue-400 transition-colors"
+                                placeholder="Confirm your entered password"
+                                required
+                            />
+                        </div>
+
+                        <div className="space-y-2">
+                            <label htmlFor="user_address" className="block text-sm font-medium text-gray-700">
                                 Address
                             </label>
                             <input
-                                id="address"
-                                name="address"
+                                id="user_address"
+                                name="user_address"
                                 type="text"
-                                value={formData.address}
+                                value={formData.user_address}
                                 onChange={handleChange}
                                 className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-200 focus:border-blue-400 transition-colors"
                                 placeholder="Enter your address"
@@ -139,20 +164,20 @@ function Register({ onSwitchToLogin }) {
                         </div>
 
                         <div className="space-y-2">
-                            <label htmlFor="type" className="block text-sm font-medium text-gray-700">
+                            <label htmlFor="user_type" className="block text-sm font-medium text-gray-700">
                                 Account Type
                             </label>
                             <select
-                                id="type"
-                                name="type"
-                                value={formData.type}
+                                id="user_type"
+                                name="user_type"
+                                value={formData.user_type}
                                 onChange={handleChange}
                                 className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-200 focus:border-blue-400 transition-colors"
                                 required
                             >
                                 <option value="customer">Customer</option>
                                 <option value="restaurant">Restaurant</option>
-                                <option value="delivery">Delivery Partner</option>
+                                <option value="courier">Delivery Partner</option>
                             </select>
                         </div>
 

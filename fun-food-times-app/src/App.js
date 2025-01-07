@@ -8,8 +8,9 @@ import {
 } from "react-router-dom";
 import Login from './components/Login'
 import Register from './components/Register'
+import Home from './components/Home'
 
-const Home = () => {
+const Welcome = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex flex-col items-center justify-center">
       <div className="flex flex-col items-center justify-center gap-8">
@@ -44,9 +45,10 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Welcome />} />
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
+        <Route path="home" element={<Home />} />
       </Routes>
     </Router>
   );
