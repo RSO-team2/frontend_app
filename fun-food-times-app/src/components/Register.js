@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import { Pizza } from 'lucide-react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from "react-router-dom";
-import { Pizza } from 'lucide-react'
 
 function Register() {
     const navigate = useNavigate();
@@ -48,7 +48,11 @@ function Register() {
                 throw new Error(data.error || 'Registration failed')
             } else {
                 localStorage.setItem('user', JSON.stringify(data.user_id))
-                navigate('/home')
+                if (data.user_type === 3) {
+                    navigate('/home')
+                } else {
+                    navigate('/register/restaurant')
+                }
             }
         } catch (err) {
             setError(err instanceof Error ? err.message : 'An error occurred during registration')

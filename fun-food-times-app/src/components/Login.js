@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import { Pizza } from 'lucide-react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from "react-router-dom";
-import { Pizza } from 'lucide-react'
 
 function Login() {
     const navigate = useNavigate();

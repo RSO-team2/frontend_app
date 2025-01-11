@@ -8,7 +8,9 @@ import {
 } from "react-router-dom";
 import Login from './components/Login'
 import Register from './components/Register'
+import MakeRestaurant from './components/MakeRestaurant'
 import Home from './components/Home'
+import OrderManager from './components/OrderManager'
 
 const Welcome = () => {
   return (
@@ -48,7 +50,9 @@ function App() {
         <Route path="/" element={<Welcome />} />
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
+        <Route path="register/restaurant" element={<MakeRestaurant />} />
         <Route path="home" element={<Home />} />
+        <Route path="manage_order/:id" element={<OrderManager />} />
       </Routes>
     </Router>
   );
