@@ -35,6 +35,7 @@ function Home() {
             }
 
             const data = await response.json();
+            setRestaurants(data.resturant_list);
             return { data };
         } catch (error) {
             return {
@@ -61,6 +62,7 @@ function Home() {
             }
 
             const data = await response.json();
+            setRestaurantReservations(data.reservations);
             return { data };
         } catch (error) {
             return {
@@ -84,6 +86,7 @@ function Home() {
             }
 
             const data = await response.json();
+            setUserReservations(data.reservations);
             return { data };
         } catch (error) {
             return {
@@ -110,7 +113,7 @@ function Home() {
             }
 
             const data = await response.json();
-
+            setRestaurantOrders(data.data);
             return { data };
         } catch (error) {
             return {
@@ -134,6 +137,7 @@ function Home() {
             }
 
             const data = await response.json();
+            setUserOrders(data.data);
             return { data };
         } catch (error) {
             return {
@@ -160,33 +164,13 @@ function Home() {
             }
 
             const data = await response.json();
-            
+            setRestaurantMenu(data.menu_items);
             return { data };
         } catch (error) {
             return {
                 data: [],
                 error: 'Failed to load restaurants. Please try again later.' + error,
             };
-        }
-    }
-
-    const getOrdersRestaurant = async () => {
-        const response = await fetchRestaurantOrders();
-        if (response.data.data) {
-            setRestaurantOrders(response.data.data);
-        }
-    }
-
-    const getMenuItems = async () => {
-        const response = await fetchMenuOfRestaurnat();
-        if (response.data.menu_items) {
-            setRestaurantMenu(response.data.menu_items);
-        }
-    }
-    const getRestaurantReservations = async () => {
-        const response = await fetchRestaurantReservations();
-        if (response.data.reservations) {
-            setRestaurantReservations(response.data.reservations);
         }
     }
 
@@ -206,7 +190,7 @@ function Home() {
                 throw new Error('Failed to update order status');
             }
             const data = await response.json();
-            getOrdersRestaurant(restaurantId);
+            fetchRestaurantOrders();
             return { data };
         } catch (error) {
             return {
@@ -231,41 +215,25 @@ function Home() {
         if (!response.ok) {
             throw new Error(data.error || 'Failed to fetch user info');
         }
+        setUserType(data.user_type);
+        setRestaurantId(data.restaurant_id);
         return { data };
     }
 
     useEffect(() => {
-        const getResturants = async () => {
-            const response = await fetchRestaurants();
-            setRestaurants(response.data.resturant_list);
-        }
-        const getOrdersUser = async () => {
-            const response = await fetchUserOrders(localStorage.getItem('user'));
-            if (response.data.data) {
-                setUserOrders(response.data.data);
-            }
-        }
-        const getUserReservations = async () => {
-            const response = await fetchUserReservations(localStorage.getItem('user'));
-            if (response.data.reservations) {
-                setUserReservations(response.data.reservations);
-            }
-        }
-        const setUserInfo = async () => {
-            const data = await getUserInfo();
-            setUserType(data.data.user_type);
-            setRestaurantId(data.data.restaurant_id);
-        }
-        getResturants();
-        setUserInfo();
-        getOrdersUser();
-        getUserReservations();
+        fetchRestaurants();
+        fetchUserOrders(localStorage.getItem('user'));
+        fetchUserReservations(localStorage.getItem('user'));
+        getUserInfo();
     }, []);
 
     useEffect(() => {
-        getRestaurantReservations();
-        getOrdersRestaurant();
-        getMenuItems();
+        console.log(restaurantId);
+        if (restaurantId) {
+            fetchRestaurantReservations();
+            fetchRestaurantOrders();
+            fetchMenuOfRestaurnat();
+        }
     }, [restaurantId]);
 
     return (
@@ -305,24 +273,24 @@ function Home() {
 
                                                     {order[6] === 1 ?
                                                         <p
-                                                            className='text-white px-6 py-3 bg-red-600 rounded-lg hover:bg-blue-700 transition-colors duration-200'
+                                                            className='text-white px-6 py-3 bg-red-600 rounded-lg'
                                                         >
                                                             Not Yet Processing
                                                         </p>
                                                         : order[6] === 2 ?
                                                             <p
-                                                                className='text-white px-6 py-3 bg-orange-600 rounded-lg hover:bg-blue-700 transition-colors duration-200'
+                                                                className='text-white px-6 py-3 bg-orange-600 rounded-lg'
                                                             >
                                                                 Processing
                                                             </p>
                                                             : order[6] === 3 ?
                                                                 <p
-                                                                    className='text-white px-6 py-3 bg-green-600 rounded-lg hover:bg-blue-700 transition-colors duration-200'
+                                                                    className='text-white px-6 py-3 bg-blue-600 rounded-lg'
                                                                 >
                                                                     In Delivery
                                                                 </p>
                                                                 : <p
-                                                                    className='text-white px-6 py-3 bg-green-600 rounded-lg hover:bg-blue-700 transition-colors duration-200'
+                                                                    className='text-white px-6 py-3 bg-green-600 rounded-lg'
                                                                 >
                                                                     Delivered
                                                                 </p>}
@@ -410,52 +378,54 @@ function Home() {
                                     <h1 className="text-3xl font-bold text-gray-900 mb-2">Active Orders</h1>
                                     <p className="text-gray-600 mb-8">Manage the currently active orders</p>
                                 </div>
-                                <div className="flex">
-                                    {restaurantOrders.filter((order) => order[6] !== 4).map((order) => (
-                                        <div key={order[0]} className="bg-black text-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 w-full">
-                                            <div className="grid gap-4 m-4">
-                                                <span>Ordered On: {order[2]}</span> <span> Total Price: {order[3]} €</span>
-                                                <div className="flex items-center gap-2 max-w-32">
-                                                    {order[4].map((item) => (
-                                                        <div key={item} className="flex items-center gap-2">
-                                                            <div className="relative aspect-[4/3] overflow-hidden rounded-lg">
-                                                                <img
-                                                                    src={restaurantMenu.filter((mi) => mi[0] === item)[0][3]}
-                                                                    alt={restaurantMenu.filter((mi) => mi[0] === item)[0][1]}
-                                                                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                                                                />
+                                <div className="flex flex-col space-y-4">
+                                    {restaurantMenu && (
+                                        restaurantOrders.filter((order) => order[6] !== 4).map((order) => (
+                                            <div key={order[0]} className="bg-black text-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 w-full">
+                                                <div className="grid gap-4 m-4">
+                                                    <span>Ordered On: {order[2]}</span> <span> Total Price: {order[3]} €</span>
+                                                    <div className="flex items-center gap-2 max-w-32">
+                                                        {order[4].map((item) => (
+                                                            <div key={item} className="flex items-center gap-2">
+                                                                <div className="relative aspect-[4/3] overflow-hidden rounded-lg">
+                                                                    <img
+                                                                        src={restaurantMenu.filter((mi) => mi[0] === item)[0][3]}
+                                                                        alt={restaurantMenu.filter((mi) => mi[0] === item)[0][1]}
+                                                                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                                                    />
+                                                                </div>
+                                                                <span >{restaurantMenu.filter((mi) => mi[0] === item)[0][1]}</span>
                                                             </div>
-                                                            <span >{restaurantMenu.filter((mi) => mi[0] === item)[0][1]}</span>
-                                                        </div>
-                                                    ))}
-                                                </div>
+                                                        ))}
+                                                    </div>
 
-                                                {order[6] === 1 ?
-                                                    <button
-                                                        className='text-white px-6 py-3 bg-red-600 rounded-lg hover:bg-blue-700 transition-colors duration-200'
-                                                        onClick={() => updateOrderStatus(order[0], 2)}>
-                                                        Start Processing
-                                                    </button>
-                                                    : order[6] === 2 ?
+                                                    {order[6] === 1 ?
                                                         <button
-                                                            className='text-white px-6 py-3 bg-orange-600 rounded-lg hover:bg-blue-700 transition-colors duration-200'
-                                                            onClick={() => updateOrderStatus(order[0], 3)}>
-                                                            Make Ready For Pickup
+                                                            className='text-white px-6 py-3 bg-red-600 rounded-lg hover:bg-blue-700 transition-colors duration-200'
+                                                            onClick={() => updateOrderStatus(order[0], 2)}>
+                                                            Start Processing
                                                         </button>
-                                                        : order[6] === 3 ?
+                                                        : order[6] === 2 ?
                                                             <button
-                                                                className='text-white px-6 py-3 bg-green-600 rounded-lg hover:bg-blue-700 transition-colors duration-200'
-                                                                onClick={() => updateOrderStatus(order[0], 4)}>
-                                                                Confirm Delivery
+                                                                className='text-white px-6 py-3 bg-orange-600 rounded-lg hover:bg-blue-700 transition-colors duration-200'
+                                                                onClick={() => updateOrderStatus(order[0], 3)}>
+                                                                Make Ready For Pickup
                                                             </button>
-                                                            : <div></div>}
+                                                            : order[6] === 3 ?
+                                                                <button
+                                                                    className='text-white px-6 py-3 bg-green-600 rounded-lg hover:bg-blue-700 transition-colors duration-200'
+                                                                    onClick={() => updateOrderStatus(order[0], 4)}>
+                                                                    Confirm Delivery
+                                                                </button>
+                                                                : <div></div>}
+                                                </div>
                                             </div>
-                                        </div>
-                                    ))}
+                                        ))
+                                    )}
                                 </div>
                             </div>
 
-                            <div className="bg-white/95 flex flex-col justify-between backdrop-blur-sm rounded-xl shadow-xl p-6">
+                            <div className="bg-white/95 flex flex-col justify-start backdrop-blur-sm rounded-xl shadow-xl p-6">
                                 <div className="text-left space-y-2">
                                     <h1 className="text-3xl font-bold text-gray-900 mb-2">Upcomming Reservations</h1>
                                     <p className="text-gray-600 mb-8">View the upcomming reservations made by your customers</p>
