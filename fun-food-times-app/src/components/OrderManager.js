@@ -67,7 +67,7 @@ function OrderManager() {
             const items = Array.from(selectedImages).map((index) => restaurantMenu[index][0]);
             var subTotal = 0
             items.forEach((item) => {
-                subTotal += restaurantMenu.filter((i) => i[0] === item)[0][2];
+                subTotal += Number(restaurantMenu.filter((i) => i[0] === item)[0][2]);
             });
             console.log(subTotal)
             const userLocation = await getUserLocation();
