@@ -219,8 +219,9 @@ function Home() {
         }
         const getMenuItems = async (restaurantId) => {
             const response = await fetchMenuOfRestaurnat(restaurantId);
-            console.log(response.data)
-            setRestaurantMenu(response.data.menu_items);
+            if (response.data.menu_items) {
+                setRestaurantMenu(response.data.menu_items);
+            }
         }
         const getRestaurantReservations = async (restaurantId) => {
             const response = await fetchRestaurantReservations(restaurantId);
@@ -248,7 +249,6 @@ function Home() {
                 getRestaurantReservations(data.data.restaurant_id);
                 getOrdersRestaurant(data.data.restaurant_id);
                 getMenuItems(data.data.restaurant_id);
-                console.log(restaurantMenu)
             }
         }
         getResturants();
