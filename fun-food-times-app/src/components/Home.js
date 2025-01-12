@@ -151,7 +151,7 @@ function Home() {
             }
 
             const data = await response.json();
-
+            console.log(data)
             return { data };
         } catch (error) {
             return {
@@ -164,7 +164,6 @@ function Home() {
     const getOrdersRestaurant = async (restaurantId) => {
         const response = await fetchRestaurantOrders(restaurantId);
         if (response.data.data) {
-            console.log(response.data);
             setRestaurantOrders(response.data.data);
         }
     }
@@ -220,6 +219,7 @@ function Home() {
         }
         const getMenuItems = async (restaurantId) => {
             const response = await fetchMenuOfRestaurnat(restaurantId);
+            console.log(response.data)
             setRestaurantMenu(response.data.menu_items);
         }
         const getRestaurantReservations = async (restaurantId) => {
@@ -248,6 +248,7 @@ function Home() {
                 getRestaurantReservations(data.data.restaurant_id);
                 getOrdersRestaurant(data.data.restaurant_id);
                 getMenuItems(data.data.restaurant_id);
+                console.log(restaurantMenu)
             }
         }
         getResturants();
