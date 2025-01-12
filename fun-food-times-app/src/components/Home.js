@@ -164,7 +164,7 @@ function Home() {
     const getOrdersRestaurant = async (restaurantId) => {
         const response = await fetchRestaurantOrders(restaurantId);
         console.log(response.data);
-        if (response.data.data.length > 0) {
+        if (response.data.data) {
             setRestaurantOrders(response.data.data);
         }
     }
@@ -224,19 +224,19 @@ function Home() {
         }
         const getRestaurantReservations = async (restaurantId) => {
             const response = await fetchRestaurantReservations(restaurantId);
-            if (response.data.reservations.length > 0) {
+            if (response.data.reservations) {
                 setRestaurantReservations(response.data.reservations);
             }
         }
         const getOrdersUser = async () => {
             const response = await fetchUserOrders(localStorage.getItem('user'));
-            if (response.data.data.length > 0) {
+            if (response.data.data) {
                 setUserOrders(response.data.data);
             }
         }
         const getUserReservations = async () => {
             const response = await fetchUserReservations(localStorage.getItem('user'));
-            if (response.data.reservations.length > 0) {
+            if (response.data.reservations) {
                 setUserReservations(response.data.reservations);
             }
         }
