@@ -45,6 +45,9 @@ function Home() {
     }
 
     const fetchRestaurantReservations = async () => {
+        if (restaurantId === 0) {
+            return { data: [] };
+        }
         try {
             const response = await fetch(reservationUrl + '/get_reservations_by_restaurant?restaurant_id=' + restaurantId, {
                 method: 'GET',
@@ -91,6 +94,9 @@ function Home() {
     }
 
     const fetchRestaurantOrders = async () => {
+        if (restaurantId === 0) {
+            return { data: [] };
+        }
         try {
             const response = await fetch(orderUrl + '/get_restaurant_orders?restaurant_id=' + restaurantId, {
                 method: 'GET',
@@ -138,6 +144,9 @@ function Home() {
     }
 
     const fetchMenuOfRestaurnat = async () => {
+        if (restaurantId === 0) {
+            return { data: [] };
+        }
         try {
             const response = await fetch(restaurantUrl + '/get_menu_by_id?restaurant_id=' + restaurantId, {
                 method: 'GET',
@@ -168,13 +177,13 @@ function Home() {
         }
     }
 
-    const getMenuItems = async (restaurantId) => {
+    const getMenuItems = async () => {
         const response = await fetchMenuOfRestaurnat();
         if (response.data.menu_items) {
             setRestaurantMenu(response.data.menu_items);
         }
     }
-    const getRestaurantReservations = async (restaurantId) => {
+    const getRestaurantReservations = async () => {
         const response = await fetchRestaurantReservations();
         if (response.data.reservations) {
             setRestaurantReservations(response.data.reservations);
@@ -251,13 +260,13 @@ function Home() {
         setUserInfo();
         getOrdersUser();
         getUserReservations();
-    }, [fetchRestaurants, fetchUserOrders, fetchUserReservations, getUserInfo]);
+    }, []);
 
     useEffect(() => {
         getRestaurantReservations();
         getOrdersRestaurant();
         getMenuItems();
-    }, [getMenuItems, getOrdersRestaurant, getRestaurantReservations, restaurantId]);
+    }, [restaurantId]);
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex flex-col items-center">
