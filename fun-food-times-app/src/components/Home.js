@@ -104,7 +104,7 @@ function Home() {
             }
 
             const data = await response.json();
-            console.log(data);
+
             return { data };
         } catch (error) {
             return {
@@ -163,13 +163,10 @@ function Home() {
 
     const getOrdersRestaurant = async (restaurantId) => {
         const response = await fetchRestaurantOrders(restaurantId);
+        console.log(response.data.data.length > 0);
         if (response.data.data.length > 0) {
-            setRestaurantOrders(response.data.data.map(order => ({
-                ...order,
-                date: new Date(order.date).toLocaleDateString(),
-                time: new Date(order.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-            })));
-            console.log(restaurantOrders);
+            console.log(response.data.data);
+            setRestaurantOrders(response.data.data);
         }
     }
 
@@ -229,31 +226,19 @@ function Home() {
         const getRestaurantReservations = async (restaurantId) => {
             const response = await fetchRestaurantReservations(restaurantId);
             if (response.data.reservations.length > 0) {
-                setRestaurantReservations(response.data.reservations.map(reservation => ({
-                    ...reservation,
-                    date: new Date(reservation.date).toLocaleDateString(),
-                    time: new Date(reservation.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-                })));
+                setRestaurantReservations(response.data.reservations);
             }
         }
         const getOrdersUser = async () => {
             const response = await fetchUserOrders(localStorage.getItem('user'));
             if (response.data.data.length > 0) {
-                setUserOrders(response.data.data.map(order => ({
-                    ...order,
-                    date: new Date(order.date).toLocaleDateString(),
-                    time: new Date(order.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                })));
+                setUserOrders(response.data.data);
             }
         }
         const getUserReservations = async () => {
             const response = await fetchUserReservations(localStorage.getItem('user'));
             if (response.data.reservations.length > 0) {
-                setUserReservations(response.data.reservations.map(reservation => ({
-                    ...reservation,
-                    date: new Date(reservation.date).toLocaleDateString(),
-                    time: new Date(reservation.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-                })));
+                setUserReservations(response.data.reservations);
             }
         }
         const setUserInfo = async () => {
