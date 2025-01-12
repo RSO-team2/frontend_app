@@ -44,7 +44,7 @@ function Home() {
         }
     }
 
-    const fetchRestaurantReservations = async (restaurantId) => {
+    const fetchRestaurantReservations = async () => {
         try {
             const response = await fetch(reservationUrl + '/get_reservations_by_restaurant?restaurant_id=' + restaurantId, {
                 method: 'GET',
@@ -90,7 +90,7 @@ function Home() {
         }
     }
 
-    const fetchRestaurantOrders = async (restaurantId) => {
+    const fetchRestaurantOrders = async () => {
         try {
             const response = await fetch(orderUrl + '/get_restaurant_orders?restaurant_id=' + restaurantId, {
                 method: 'GET',
@@ -137,7 +137,7 @@ function Home() {
         }
     }
 
-    const fetchMenuOfRestaurnat = async (restaurantId) => {
+    const fetchMenuOfRestaurnat = async () => {
         try {
             const response = await fetch(restaurantUrl + '/get_menu_by_id?restaurant_id=' + restaurantId, {
                 method: 'GET',
@@ -151,7 +151,7 @@ function Home() {
             }
 
             const data = await response.json();
-            console.log(data)
+            
             return { data };
         } catch (error) {
             return {
@@ -161,10 +161,23 @@ function Home() {
         }
     }
 
-    const getOrdersRestaurant = async (restaurantId) => {
-        const response = await fetchRestaurantOrders(restaurantId);
+    const getOrdersRestaurant = async () => {
+        const response = await fetchRestaurantOrders();
         if (response.data.data) {
             setRestaurantOrders(response.data.data);
+        }
+    }
+
+    const getMenuItems = async (restaurantId) => {
+        const response = await fetchMenuOfRestaurnat();
+        if (response.data.menu_items) {
+            setRestaurantMenu(response.data.menu_items);
+        }
+    }
+    const getRestaurantReservations = async (restaurantId) => {
+        const response = await fetchRestaurantReservations();
+        if (response.data.reservations) {
+            setRestaurantReservations(response.data.reservations);
         }
     }
 
@@ -217,18 +230,6 @@ function Home() {
             const response = await fetchRestaurants();
             setRestaurants(response.data.resturant_list);
         }
-        const getMenuItems = async (restaurantId) => {
-            const response = await fetchMenuOfRestaurnat(restaurantId);
-            if (response.data.menu_items) {
-                setRestaurantMenu(response.data.menu_items);
-            }
-        }
-        const getRestaurantReservations = async (restaurantId) => {
-            const response = await fetchRestaurantReservations(restaurantId);
-            if (response.data.reservations) {
-                setRestaurantReservations(response.data.reservations);
-            }
-        }
         const getOrdersUser = async () => {
             const response = await fetchUserOrders(localStorage.getItem('user'));
             if (response.data.data) {
@@ -245,17 +246,18 @@ function Home() {
             const data = await getUserInfo();
             setUserType(data.data.user_type);
             setRestaurantId(data.data.restaurant_id);
-            if (data.data.restaurant_id) {
-                getRestaurantReservations(data.data.restaurant_id);
-                getOrdersRestaurant(data.data.restaurant_id);
-                getMenuItems(data.data.restaurant_id);
-            }
         }
         getResturants();
         setUserInfo();
         getOrdersUser();
         getUserReservations();
-    }, []);
+    }, [fetchRestaurants, fetchUserOrders, fetchUserReservations, getUserInfo]);
+
+    useEffect(() => {
+        getRestaurantReservations();
+        getOrdersRestaurant();
+        getMenuItems();
+    }, [getMenuItems, getOrdersRestaurant, getRestaurantReservations, restaurantId]);
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex flex-col items-center">
