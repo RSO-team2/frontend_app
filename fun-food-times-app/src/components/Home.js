@@ -257,6 +257,7 @@ function Home() {
             if (data.data.restaurant_id) {
                 getRestaurantReservations(data.data.restaurant_id);
                 getOrdersRestaurant(data.data.restaurant_id);
+                console.log(restaurantOrders);
                 getMenuItems(data.data.restaurant_id);
             }
         }
@@ -297,7 +298,7 @@ function Home() {
                                     </div>
                                     <div className="flex flex-col gap-4">
                                         {userOrders.map((order) => (
-                                            <div key={order[0]} className="bg-black rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 w-full">
+                                            <div key={order[0]} className="bg-black text-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 w-full">
                                                 <div className="grid gap-4 m-4">
                                                     <span>Ordered On: {order[2]}</span> <span> Total Price: {order[3]} €</span>
 
@@ -410,7 +411,7 @@ function Home() {
                                 </div>
                                 <div className="flex">
                                     {restaurantOrders.filter((order) => order[6] !== 4).map((order) => (
-                                        <div key={order[0]} className="bg-black rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 w-full">
+                                        <div key={order[0]} className="bg-black text-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 w-full">
                                             <div className="grid gap-4 m-4">
                                                 <span>Ordered On: {order[2]}</span> <span> Total Price: {order[3]} €</span>
                                                 <div className="flex items-center gap-2 max-w-32">
