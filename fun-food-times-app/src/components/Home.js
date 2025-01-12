@@ -163,9 +163,7 @@ function Home() {
 
     const getOrdersRestaurant = async (restaurantId) => {
         const response = await fetchRestaurantOrders(restaurantId);
-        console.log(response.data.data.length > 0);
         if (response.data.data.length > 0) {
-            console.log(response.data.data);
             setRestaurantOrders(response.data.data);
         }
     }
